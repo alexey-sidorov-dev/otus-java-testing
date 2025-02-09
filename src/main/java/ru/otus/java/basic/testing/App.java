@@ -11,10 +11,6 @@ public class App {
       throw new RuntimeException("Входной массив пустой");
     }
 
-    if (array.length == 1 && array[0] == 1) {
-      return new int[]{};
-    }
-
     for (int i = array.length - 1; i >= 0; i--) {
       if (array[i] == 1) {
         return Arrays.copyOfRange(array, i + 1, array.length);

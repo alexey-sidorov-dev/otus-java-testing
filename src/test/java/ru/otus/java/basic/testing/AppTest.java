@@ -1,7 +1,11 @@
 package ru.otus.java.basic.testing;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class AppTest {
 
@@ -9,6 +13,7 @@ class AppTest {
   void testBuildArray() {
 
     Assertions.assertArrayEquals(new int[]{}, App.buildArray(new int[]{1}));
+    Assertions.assertArrayEquals(new int[]{}, App.buildArray(new int[]{1, 2, 1}));
     Assertions.assertArrayEquals(new int[]{2, 3}, App.buildArray(new int[]{1, 2, 3}));
     Assertions.assertArrayEquals(new int[]{5, 6, 7},
         App.buildArray(new int[]{1, 2, 3, 1, 5, 6, 7}));
@@ -22,14 +27,21 @@ class AppTest {
 
   }
 
-  @Test
-  void testCheckArray() {
-    Assertions.assertTrue(App.checkArray(new int[]{1, 2}));
-    Assertions.assertTrue(App.checkArray(new int[]{1, 1, 2, 2, 1, 2}));
-
-    Assertions.assertFalse(App.checkArray(new int[]{}));
-    Assertions.assertFalse(App.checkArray(new int[]{2, 2, 2}));
-    Assertions.assertFalse(App.checkArray(new int[]{1, 1, 1}));
-    Assertions.assertFalse(App.checkArray(new int[]{1, 2, 1, 2, 3}));
+  @ParameterizedTest(name = "{index} - {1} should give {0}")
+  @MethodSource("arrayProviderFalse")
+  void testCheckArrayParametrized(boolean expected, int[] array) {
+    Assertions.assertEquals(expected, App.checkArray(array));
   }
+
+  static Stream<Arguments> arrayProviderFalse() {
+    return Stream.of(
+        Arguments.arguments(true, new int[]{1, 2}),
+        Arguments.arguments(true, new int[]{1, 2}),
+        Arguments.arguments(false, new int[]{}),
+        Arguments.arguments(false, new int[]{2, 2, 2}),
+        Arguments.arguments(false, new int[]{1, 1, 1}),
+        Arguments.arguments(false, new int[]{1, 2, 1, 2, 3})
+    );
+  }
+
 }
